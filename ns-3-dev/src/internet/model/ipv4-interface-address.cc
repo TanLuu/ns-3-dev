@@ -116,6 +116,29 @@ Ipv4InterfaceAddress::IsSecondary (void) const
   return m_secondary;
 }
 
+bool
+Ipv4InterfaceAddress::IsInSameSubnet(Ipv4Address b) const
+{
+  NS_LOG_FUNCTION_NOARGS ();
+  Ipv4Address aAddr = m_local;
+  aAddr = aAddr.CombineMask (m_mask);
+  Ipv4Address bAddr = b;
+  bAddr = bAddr.CombineMask (m_mask);
+
+  if (aAddr == bAddr)
+  {
+	return true;
+  }
+
+  /*if ((bAddr.IsLinkLocalMulticast () && aAddr.IsLinkLocal ()) ||
+     (aAddr.IsLinkLocalMulticast () && bAddr.IsLinkLocal ()))
+  {
+    return true;
+  }*/
+
+  return false;
+}
+
 void 
 Ipv4InterfaceAddress::SetSecondary (void)
 {

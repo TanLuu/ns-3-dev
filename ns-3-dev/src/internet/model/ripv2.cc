@@ -324,7 +324,7 @@ void Ripv2::NotifyInterfaceUp (uint32_t i)
       Ipv4Mask networkMask = address.GetMask ();
       AddNetworkRouteTo (networkAddress, networkMask, i);
 
-      if (address.GetScope () == Ipv4InterfaceAddress::LINK && sendSocketFound == false && activeInterface == true)
+      if (address.GetScope () == Ipv4InterfaceAddress::GLOBAL && sendSocketFound == false && activeInterface == true)
         {
           NS_LOG_LOGIC ("Ripv2: adding sending socket to " << address.GetLocal ());
           TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
@@ -771,7 +771,8 @@ void Ripv2::HandleRequests (Ripv2Header requestHdr, Ipv4Address senderAddress, u
   // one entry in the request,
   // address family identifier of zero 
   // metric of infinity 
-  if (rtes.size () == 1 && ttl == 255)
+  Ipv4InterfaceAddress IfAddress = m_ipv4->GetAddress (incomingInterface, 0);
+  if (rtes.size () == 1 && IfAddress.IsInSameSubnet(senderAddress))
     {
       if (rtes.begin ()->GetIpAddress () == Ipv4Address::GetAny () &&
           rtes.begin ()->GetSubnetMask () == Ipv4Mask::GetZero () &&
@@ -861,7 +862,7 @@ void Ripv2::HandleRequests (Ripv2Header requestHdr, Ipv4Address senderAddress, u
       // we use one of the sending sockets, as they're bound to the right interface
       // and the local address might be used on different interfaces.
       Ptr<Socket> sendingSoket;
-     if (ttl == 255)
+      if (IfAddress.IsInSameSubnet(senderAddress))
         {
           for (SocketListI iter = m_sendSocketList.begin (); iter != m_sendSocketList.end (); iter++ )
             {
@@ -931,8 +932,8 @@ void Ripv2::HandleResponses (Ripv2Header hdr, Ipv4Address senderAddress, uint32_
       NS_LOG_LOGIC ("Ignoring an update message from an excluded interface: " << incomingInterface);
       return;
     }
-//direct
-  if (ttl != 255)
+  Ipv4InterfaceAddress IfAddress = m_ipv4->GetAddress (incomingInterface, 0);
+  if (!IfAddress.IsInSameSubnet(senderAddress))
     {
       NS_LOG_LOGIC ("Ignoring an update message with suspicious hop count: " << int (ttl));
       return;

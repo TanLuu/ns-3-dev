@@ -116,7 +116,10 @@ public:
    * \returns true if the address is secondary
    */
   bool IsSecondary (void) const;
-
+  /**
+   * \brief Check is two address are in same subnet or not
+   */
+  bool IsInSameSubnet (Ipv4Address b) const;
   /**
    * \brief Make the address secondary (used for multihoming)
    */
