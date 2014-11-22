@@ -568,7 +568,7 @@ Ptr<Ipv4Route> Ripv2::Lookup (Ipv4Address dst, Ptr<NetDevice> interface)
   Ptr<Ipv4Route> rtentry = 0;
   uint16_t longestMask = 0;
  /* when sending on multicast, there have to be interface specified */
-  if (dst.IsLocalMulticast())
+  if (dst.IsMulticast())
     {
       NS_ASSERT_MSG (interface, "Try to send on link multicast address, and no interface index is given!");
       rtentry = Create<Ipv4Route> ();
@@ -1102,7 +1102,7 @@ void Ripv2::DoSendRouteUpdate (bool periodic)
                   (rtIter->first->GetDestNetworkMask () == Ipv4Mask::GetZero ()) &&
                   (rtIter->first->GetInterface () != interface));
 
-              if ((isGlobal || isDefaultRoute) &&(periodic || rtIter->first->IsRouteChanged ()))
+              if ((isGlobal || isDefaultRoute) && (periodic || rtIter->first->IsRouteChanged ()))
                 {
                   Ripv2Rte rte;
                   rte.SetIpAddress (rtIter->first->GetDestNetwork ());
