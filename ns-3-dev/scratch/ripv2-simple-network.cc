@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Author: Tommaso Pecorella <tommaso.pecorella@unifi.it>
+ * Edited by Tan Luu <luuhoangtan@gmail.com>
+ * and Thoan Pham <phamngocthoan2171991@gmail.com>
  */
 
 // Network topology
