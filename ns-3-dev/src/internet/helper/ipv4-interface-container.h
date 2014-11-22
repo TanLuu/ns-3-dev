@@ -166,7 +166,18 @@ public:
    * @see Ipv4InterfaceContainer
    */
   void Add (std::string ipv4Name, uint32_t interface);
-
+  /**
+    * \brief Set the state of the stack (act as a router or as an host) for the specified index.
+    * This automatically sets all the node's interfaces to the same forwarding state.
+    * \param i index
+    * \param state true : is a router, false : is an host
+    */
+  void SetForwarding (uint32_t i, bool state);
+   /**
+    * \brief Set the default route for all the devices (except the router itself).
+    * \param router the default router index
+    */
+  void SetDefaultRouteInAllNodes (uint32_t router);
   /**
    * Get the std::pair of an Ptr<Ipv4> and interface stored at the location 
    * specified by the index.

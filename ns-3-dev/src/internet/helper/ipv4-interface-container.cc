@@ -1,6 +1,7 @@
 #include "ipv4-interface-container.h"
 #include "ns3/node-list.h"
 #include "ns3/names.h"
+#include "ns3/ipv4-static-routing-helper.h"
 
 namespace ns3 {
 
@@ -72,5 +73,32 @@ Ipv4InterfaceContainer::Get (uint32_t i) const
   return m_interfaces[i];
 }
 
+void Ipv4InterfaceContainer::SetForwarding (uint32_t i, bool router)
+{
+  Ptr<Ipv4> ipv4 = m_interfaces[i].first;
+  ipv4->SetForwarding (m_interfaces[i].second, router);
+}
+
+void Ipv4InterfaceContainer::SetDefaultRouteInAllNodes (uint32_t router)
+{
+  Ptr<Ipv4> ipv4 = m_interfaces[router].first;
+  uint32_t other;
+
+  Ipv4Address routerAddress = GetAddress (router);
+  NS_ASSERT_MSG (routerAddress != Ipv4Address::GetAny (), "No link-local address found on router, aborting");
+
+  for (other = 0; other < m_interfaces.size (); other++)
+    {
+      if (other != router)
+        {
+          Ptr<Ipv4StaticRouting> routing = 0;
+          Ipv4StaticRoutingHelper routingHelper;
+
+          ipv4 = m_interfaces[other].first;
+          routing = routingHelper.GetStaticRouting (ipv4);
+          routing->SetDefaultRoute (routerAddress, m_interfaces[other].second);
+        }
+    }
+}
 
 } // namespace ns3
