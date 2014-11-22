@@ -487,7 +487,7 @@ void Ripv2::PrintRoutingTable (Ptr<OutputStreamWrapper> stream) const
 
   if (!m_routes.empty ())
     {
-      *os << "Destination          Mask               Next Hop      Flag  Met  If" << std::endl;
+      *os << "Destination      Mask                   Next Hop      Flag  Met   If" << std::endl;
       for (RoutesCI it = m_routes.begin (); it != m_routes.end (); it++)
         {
           Ripv2RoutingTableEntry* route = it->first;
@@ -498,13 +498,13 @@ void Ripv2::PrintRoutingTable (Ptr<OutputStreamWrapper> stream) const
               std::ostringstream dest, mask, gw, flags;
 
               dest << route->GetDest ();
-              *os << std::setiosflags (std::ios::left) << std::setw (15) << dest.str ();
+              *os << std::setiosflags (std::ios::left) << std::setw (17) << dest.str ();
 
               mask << route->GetDestNetworkMask ();
-              *os << std::setiosflags (std::ios::left) << std::setw (25) << mask.str ();
+              *os << std::setiosflags (std::ios::left) << std::setw (23) << mask.str ();
 
               gw << route->GetGateway ();
-              *os << std::setiosflags (std::ios::left) << std::setw (15) << gw.str ();
+              *os << std::setiosflags (std::ios::left) << std::setw (14) << gw.str ();
               flags << "U";
               if (route->IsHost ())
                 {
@@ -514,8 +514,8 @@ void Ripv2::PrintRoutingTable (Ptr<OutputStreamWrapper> stream) const
                 {
                   flags << "G";
                 }
-              *os << std::setiosflags (std::ios::left) << std::setw (5) << flags.str ();
-              *os << std::setiosflags (std::ios::left) << std::setw (5) << int32_t(route->GetRouteMetric ());
+              *os << std::setiosflags (std::ios::left) << std::setw (6) << flags.str ();
+              *os << std::setiosflags (std::ios::left) << std::setw (6) << int32_t(route->GetRouteMetric ());
 
               if (Names::FindName (m_ipv4->GetNetDevice (route->GetInterface ())) != "")
                 {
