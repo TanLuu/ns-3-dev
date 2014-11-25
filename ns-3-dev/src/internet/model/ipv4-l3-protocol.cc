@@ -625,7 +625,7 @@ Ipv4L3Protocol::Send (Ptr<Packet> packet,
     {
       NS_LOG_LOGIC ("Ipv4L3Protocol::Send case 1:  limited broadcast");
       ipHeader = BuildHeader (source, destination, protocol, packet->GetSize (), ttl, tos, mayFragment);
-      uint32_t ifaceIndex = 0;
+      /*uint32_t ifaceIndex = 0;
       for (Ipv4InterfaceList::iterator ifaceIter = m_interfaces.begin ();
            ifaceIter != m_interfaces.end (); ifaceIter++, ifaceIndex++)
         {
@@ -638,7 +638,17 @@ Ipv4L3Protocol::Send (Ptr<Packet> packet,
           packetCopy->AddHeader (ipHeader);
           m_txTrace (packetCopy, m_node->GetObject<Ipv4> (), ifaceIndex);
           outInterface->Send (packetCopy, destination);
-        }
+        }*/
+      // Tan Luu edited
+      uint32_t ifaceIndex = GetInterfaceForAddress (source);
+      Ptr<Ipv4Interface> outInterface = GetInterface (ifaceIndex);
+      Ptr<Packet> packetCopy = packet->Copy ();
+      NS_ASSERT (packetCopy->GetSize () <= outInterface->GetDevice ()->GetMtu ());
+      m_sendOutgoingTrace (ipHeader, packetCopy, ifaceIndex);
+      packetCopy->AddHeader (ipHeader);
+      m_txTrace (packetCopy, m_node->GetObject<Ipv4> (), ifaceIndex);
+      outInterface->Send (packetCopy, destination);
+      // finish
       return;
     }
 
