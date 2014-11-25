@@ -136,7 +136,7 @@ void Ripv2::DoInitialize ()
               NS_ASSERT_MSG (ret == 0, "Bind unsuccessful");
               socket->BindToNetDevice (m_ipv4->GetNetDevice (i));
               socket->ShutdownRecv ();
-	      socket->SetIpRecvTtl(true);
+              socket->SetIpRecvTtl(true);
               m_sendSocketList[socket] = i;
             }
         else if(m_ipv4->GetAddress(i,j).GetScope() == Ipv4InterfaceAddress::GLOBAL)
@@ -423,6 +423,7 @@ void Ripv2::NotifyRemoveAddress (uint32_t interface, Ipv4InterfaceAddress addres
     }
   Ipv4Address networkAddress = address.GetLocal ().CombineMask (address.GetMask ());
   Ipv4Mask networkMask = address.GetMask ();
+
 
   // Remove all routes that are going through this interface
   // which reference this network
