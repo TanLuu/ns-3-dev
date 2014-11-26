@@ -67,8 +67,8 @@ NS_LOG_COMPONENT_DEFINE ("Ripv2SimpleRouting");
 
 void TearDownLink (Ptr<Node> nodeA, Ptr<Node> nodeB, uint32_t interfaceA, uint32_t interfaceB)
 {
-  nodeA->GetObject<Ipv6> ()->SetDown (interfaceA);
-  nodeB->GetObject<Ipv6> ()->SetDown (interfaceB);
+  nodeA->GetObject<Ipv4> ()->SetDown (interfaceA);
+  nodeB->GetObject<Ipv4> ()->SetDown (interfaceB);
 }
 
 int main (int argc, char **argv)
@@ -183,7 +183,7 @@ int main (int argc, char **argv)
   NS_LOG_INFO ("Assign IPv4 Addresses.");
   Ipv4AddressHelper ipv4;
 
-  ipv4.SetBase ("10.1.0.0", "255.255.255.0" );
+  ipv4.SetBase ("10.1.0.0", "255.255.0.0" );
   Ipv4InterfaceContainer iic1 = ipv4.Assign (ndc1);
   iic1.SetForwarding (1, true);
   iic1.SetDefaultRouteInAllNodes (1);
@@ -213,7 +213,7 @@ int main (int argc, char **argv)
   iic6.SetForwarding (0, true);
   iic6.SetForwarding (1, true);
 
-  ipv4.SetBase ("10.2.0.0", "255.255.255.0");
+  ipv4.SetBase ("10.2.0.0", "255.255.0.0");
   Ipv4InterfaceContainer iic7 = ipv4.Assign (ndc7);
   iic7.SetForwarding (0, true);
   iic7.SetDefaultRouteInAllNodes (0);
@@ -255,7 +255,7 @@ int main (int argc, char **argv)
   csma.EnableAsciiAll (ascii.CreateFileStream ("ripv2-simple-routing.tr"));
   csma.EnablePcapAll ("ripv2-simple-routing", true);
 
-  //Simulator::Schedule (Seconds (40), &TearDownLink, b, d, 3, 2);
+  Simulator::Schedule (Seconds (40), &TearDownLink, b, d, 3, 2);
 
   /* Now, do the actual simulation. */
   NS_LOG_INFO ("Run Simulation.");

@@ -124,8 +124,8 @@ void Ripv2::DoInitialize ()
       for (uint32_t j = 0; j < m_ipv4->GetNAddresses (i); j++)
         {
           Ipv4InterfaceAddress address = m_ipv4->GetAddress (i, j);
-          bool IsNLoopback = (address.GetLocal ().CombineMask(address.GetMask ()))!= Ipv4Address("127.0.0.0");
-          if (address.GetScope() == Ipv4InterfaceAddress::GLOBAL && IsNLoopback && activeInterface == true)
+          bool IsLoopback = (address.GetLocal ().CombineMask(address.GetMask ())) == Ipv4Address("127.0.0.0");
+          if (address.GetScope() == Ipv4InterfaceAddress::GLOBAL && !IsLoopback && activeInterface == true)
             {
               NS_LOG_LOGIC ("Ripv2: adding socket to " << address.GetLocal ());
               TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
@@ -139,7 +139,7 @@ void Ripv2::DoInitialize ()
               socket->SetIpRecvTtl(true);
               m_sendSocketList[socket] = i;
             }
-        else if(m_ipv4->GetAddress(i,j).GetScope() == Ipv4InterfaceAddress::GLOBAL)
+        else if(address.GetScope() == Ipv4InterfaceAddress::GLOBAL && !IsLoopback)
             {
                addedGlobal = true;
             }
